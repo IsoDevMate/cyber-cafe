@@ -12,12 +12,12 @@ import { SignInForm } from './auth/signin';
 function App() {
   return (
     <Router>
+      <Navbar />
       <Routes>
-        <Route path="/" element={<Navbar />} />
+        <Route path="/" element={<  Dashboard/>} />
         <Route path="/signup" element={<SignUpForm />} />
         <Route path="/Signin" element={<SignInForm />} />
         <Route path="/about" element={<About />} />
-        <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="*" element={<Error />} />
       </Routes>

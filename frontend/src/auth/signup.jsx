@@ -11,20 +11,12 @@ import {
   Checkbox,
 } from "@material-tailwind/react";
 
-export const SignUpForm = () => {
-  const [open, setOpen] = React.useState(false);
-  const handleOpen = () => setOpen((cur) => !cur);
 
+export const SignUpForm = ({ open, handleOpen }) => {
   return (
     <>
-    <Button onClick={handleOpen}>Sign In</Button>
     <Dialog size="xs" open={open} handler={handleOpen} className="bg-transparent shadow-none">
       <Card className="mx-auto w-full max-w-[24rem]">
-        <CardHeader>
-          <Typography variant="h4" color="blue-gray">
-            Sign Up
-          </Typography>
-        </CardHeader>
         <CardBody className="flex flex-col gap-4">
           <Typography className="mb-3 font-normal" variant="paragraph" color="gray">
             Enter your details to create a new account.

@@ -34,7 +34,7 @@ const Navbar = () => {
                 <RightMenu mode={"horizontal"} />
               </div>
             </div>
-            <Button className="menuButton" type="text" onClick={showDrawer} style={{ position: 'absolute', left: 10 }}>
+            <Button className="menuButton" type="text" onClick={showDrawer} style={{ position: 'absolute', r: 10 }}>
               <MenuOutlined />
             </Button>
             <Drawer
@@ -45,7 +45,7 @@ const Navbar = () => {
               visible={visible}
               style={{ zIndex: 99999 }}
             >
-              <LeftMenu mode={"inline"} />
+              {/*<LeftMenu mode={"inline"} />*/}
               <RightMenu mode={"inline"} />
             </Drawer>
           </Layout.Header>

@@ -10,11 +10,14 @@ import {
   Input,
   Checkbox,
 } from "@material-tailwind/react";
+import { SignUpForm } from "./signup";
  
 export const SignInForm = () => {
   const [open, setOpen] = React.useState(false);
+  const [showSignUpModal, setShowSignUpModal] = React.useState(false);
+
   const handleOpen = () => setOpen((cur) => !cur);
- 
+  const handleShowSignUpModal = () => setShowSignUpModal((prev) => !prev);
   return (
     <>
       <Button onClick={handleOpen}>Sign In</Button>
@@ -60,7 +63,7 @@ export const SignInForm = () => {
                 variant="small"
                 color="blue-gray"
                 className="ml-1 font-bold"
-                onClick={handleOpen}
+                onClick={handleShowSignUpModal}
               >
                 Sign up
               </Typography>
@@ -68,6 +71,7 @@ export const SignInForm = () => {
           </CardFooter>
         </Card>
       </Dialog>
+      <SignUpForm open={showSignUpModal} handleOpen={handleShowSignUpModal} />
     </>
   );
 }
