@@ -1,32 +1,40 @@
 import React, { useState } from "react";
 import { Layout, Button, Drawer } from "antd";
-import LeftMenu from "./leftMenu";
+import{ LeftMenu }from "./leftMenu";
 import RightMenu from "./RightMenu";
 import { MenuOutlined } from "@ant-design/icons";
 import { useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const Navbar = () => {
   const [visible, setVisible] = useState(false);
+  const navigate = useNavigate();
   const showDrawer = () => {
     setVisible(!visible);
   };
 
   let { pathname: location } = useLocation();
+
   useEffect(() => {
     setVisible(false);
   }, [location]);
 
-
   return (
     <>
       <nav className="navbar">
-        <Layout>
-          <Layout.Header className="nav-header">
+        <Layout  className="nav-header shadow-md">
             <div className="logo">
-              <h3 className="brand-font">Your Details</h3>
+              <h3
+                className="brand-font cursor-pointer"
+                onClick={() => navigate("/")}
+              >
+                Your Details
+              </h3>
             </div>
-            <div className="navbar-menu" style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <div
+              className="navbar-menu"
+              style={{ display: "flex", justifyContent: "space-between" }}
+            >
               <div className="leftMenu">
                 <LeftMenu mode={"horizontal"} />
               </div>
@@ -34,7 +42,12 @@ const Navbar = () => {
                 <RightMenu mode={"horizontal"} />
               </div>
             </div>
-            <Button className="menuButton" type="text" onClick={showDrawer} style={{ position: 'absolute', r: 10 }}>
+            <Button
+              className="menuButton mb-10 "
+              type="text"
+              onClick={showDrawer}
+              style={{ position: "absolute", right: 10 }}
+            >
               <MenuOutlined />
             </Button>
             <Drawer
@@ -45,10 +58,10 @@ const Navbar = () => {
               visible={visible}
               style={{ zIndex: 99999 }}
             >
-              {/*<LeftMenu mode={"inline"} />*/}
+              {/* <LeftMenu mode={"inline"} /> */}
               <RightMenu mode={"inline"} />
             </Drawer>
-          </Layout.Header>
+        
         </Layout>
       </nav>
     </>

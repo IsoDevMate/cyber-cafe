@@ -11,8 +11,9 @@ const RightMenu = ({ mode }) => {
     if (window.confirm('Are you sure you want to log out?')) {
       signOut(auth)
         .then(() => {
-          // Add any additional cleanup or redirection logic here
-          navigate('/'); // Redirect to the login page after logout
+          console.log('User signed out');
+          
+          navigate('/'); 
         })
         .catch((error) => {
           console.error('Logout error:', error.message);

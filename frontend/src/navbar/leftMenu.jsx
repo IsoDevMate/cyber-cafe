@@ -1,7 +1,7 @@
 import React from "react";
 import { Menu } from "antd";
 
-const LeftMenu = ({ mode }) => {
+export const LeftMenu = ({ mode }) => {
   return (
     <>
     <Menu mode={mode}>
@@ -14,4 +14,3 @@ const LeftMenu = ({ mode }) => {
   );
 };
 
-export default LeftMenu;
