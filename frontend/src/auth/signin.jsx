@@ -11,7 +11,7 @@ import {
 } from "@material-tailwind/react";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../src/firebase";
-import { useNavigate } from "react-router-dom";
+import { useNavigate,Link } from "react-router-dom";
 import { useAuth } from "../../src/auth/context/auth";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 
@@ -24,9 +24,12 @@ export const SignIn = () => {
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+
   const navigate = useNavigate();
   const { setUser } = useAuth();
   const MIN_PASSWORD_LENGTH = 8;
+
 
   const validateEmail = (email) => {
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -38,9 +41,8 @@ export const SignIn = () => {
     setShowPassword(!showPassword);
   };
 
-  const handlePasswordChange = (e) => {
-    setPassword(e.target.value);
-  };
+
+
 
   const handleForgotPassword = () => {
     // Add your forgot password logic here
@@ -48,18 +50,9 @@ export const SignIn = () => {
     navigate("/resetpassword");
   };
 
-  
-  const handleEmailChange = (e) => {
-    setEmail(e.target.value);
-  };
-  
-  
 
 
-
-  const [showPassword, setShowPassword] = useState(false);
-
-/*  const handlePasswordChange = (e) => {
+  const handlePasswordChange = (e) => {
     const value = e.target.value.trim();
     setPassword(value);
     setPasswordError(
@@ -69,18 +62,15 @@ export const SignIn = () => {
     );
   };
 
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
-  };
-  */
 
-  /*
+
+  
   const handleEmailChange = (e) => {
     const value = e.target.value;
     setEmail(value);
     setEmailError(validateEmail(value) ? "" : "Invalid email format");
   };
-  */
+  
 
   const handleLogin = () => {
     if (!validateEmail(email) || password.length < MIN_PASSWORD_LENGTH) {
@@ -94,8 +84,9 @@ export const SignIn = () => {
       .then((userCredential) => {
         const user = userCredential.user;
         console.log("User logged in:", user);
+        alert("You have  successfully loggined in as ", user);
         setUser(user);
-        navigate("/dashboard");
+        navigate("/home");
       })
       .catch((error) => {
         console.log("Login error:", error.message);
@@ -118,7 +109,19 @@ export const SignIn = () => {
         </Typography>
       </CardHeader>
       <CardBody className="flex flex-col gap-4">
-        <Input label="Email" size="lg" />
+      <Typography className="-mb-2" variant="h6">
+          Email
+        </Typography>
+      <Input
+          label="Email"
+          size="lg"
+          value={email}
+          onChange={handleEmailChange}
+          error={emailError}
+        />
+        <Typography className="-mb-2" variant="h6">
+          Password
+        </Typography>
         <Input
           label="Password"
           size="lg"
@@ -156,15 +159,14 @@ export const SignIn = () => {
         </Typography>
         <Typography variant="small" className="mt-6 flex justify-center">
           Don&apos;t have an account?
-          <Typography
-            as="a"
-            href="#signup"
+          <Link
+            to="/signup"
             variant="small"
             color="blue-gray"
             className="ml-1 font-bold"
           >
             Sign up
-          </Typography>
+          </Link>
         </Typography>
       </CardFooter>
     </Card>
