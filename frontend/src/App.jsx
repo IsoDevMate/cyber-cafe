@@ -24,20 +24,19 @@ function App() {
       <Navbar />
       <Container>
         <Routes>
-          <Route path="/" element={<Dashboard />} />
+        <Route path="/" element={<Home />} />
+          <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/landingpage" element={<LandingPage />} />
           <Route path="/signup" element={<SignUpForm />} />
           <Route path="/signin" element={<SignIn />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
-          <Route path="/home" element={<Home />} />
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/services" element={<Services />} />
           <Route path="/profile" element={<ProfilePage />} />
-          <Route path="/resetpasswors" element={<ResetPassword />} />
+          <Route path="/resetpassword" element={<ResetPassword />} />
           <Route path="/queue" element={<Queue />} />
           <Route path="*" element={<Error />} />
-
         </Routes>
       </Container>
     </Router>
