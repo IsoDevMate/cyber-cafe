@@ -85,8 +85,6 @@ export const SignUpForm = () => {
         setUser(user);
         alert("User created successfully");
         navigate("/signin");
-
-     
       })
       .catch((err) => {
         console.log("Login error:", err.message);
@@ -98,6 +96,7 @@ export const SignUpForm = () => {
 
       // Add user data to Firestore
       const usersCollection = collection(db, "users");
+      const user = auth.currentUser;
       await addDoc(usersCollection, {
         name,
         email: user.email,
