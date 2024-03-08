@@ -25,43 +25,42 @@ export const Services = () => {
   )
 };
 
-export default Services;
 
 
 const services = [
   {
     id: 1,
-    title: 'Servicing LapTop',
+    title: 'Meet AutoManage, the best AI management tools',
     icon: '',
     subtitle:
-      'lorem ipsum dolor sit amet consectetur adipisicing elit loremlorem ipsum dolor sit amet consectetur adipisicing elit lo',
+      'AutoManage is a cutting-edge AI management tool designed to streamline your business operations and boost productivity. With its advanced algorithms and intuitive interface, AutoManage simplifies task management, optimizes resource allocation, and provides data-driven insights for informed decision-making.',
   },
   {
     id: 2,
-    title: 'VPN configuration and Remote Configuration',
+    title: 'Introducing: Productivity Cloud',
     icon: '',
     subtitle:
-      'lorem ipsum dolor sit amet consectetur adipisicing elit loremlorem ipsum dolor sit amet consectetur adipisicing elit lo',
+      'Unlock the power of collaboration with our Productivity Cloud. This innovative platform brings together a suite of tools and features to enhance teamwork, communication, and project management. Say goodbye to scattered workflows and embrace seamless integration for maximized efficiency.',
   },
   {
     id: 3,
-    title: 'Hosting And Cloud Services',
+    title: 'New Features: Collaborative Docs',
     icon: '',
     subtitle:
-      'lorem ipsum dolor sit amet consectetur adipisicing elit loremlorem ipsum dolor sit amet consectetur adipisicing elit lo',
+      'Get ready to revolutionize your document workflow with our Collaborative Docs feature. This powerful tool allows multiple team members to work on the same document simultaneously, fostering real-time collaboration and improving productivity like never before. Stay ahead of the curve with this game-changing innovation.',
   },
   {
     id: 4,
-    title: 'Data Recovery Services',
+    title: 'Browsing and VPN services AWS VPCs',
     icon: '',
     subtitle:
-      'lorem ipsum dolor sit amet consectetur adipisicing elit loremlorem ipsum dolor sit amet consectetur adipisicing elit lo',
+      'Secure your online activities with our top-notch VPN and browsing services for AWS VPCs. Our robust infrastructure ensures seamless connectivity, lightning-fast speeds, and unwavering privacy, allowing you to access the internet with confidence and peace of mind.',
   },
   {
     id: 5,
-    title: 'Browsing and  Tunnelling services AWS VPCs',
+    title: 'Data Recovery Services',
     icon: '',
     subtitle:
-      'lorem ipsum dolor sit amet consectetur adipisicing elit loremlorem ipsum dolor sit amet consectetur adipisicing elit lo',
+      'Dont let data loss derail your operations. Our reliable data recovery services are designed to safeguard your critical information and minimize downtime. With cutting-edge techniques and a team of experts, we can recover your data quickly and efficiently, ensuring business continuity.',
   },
-]
+];

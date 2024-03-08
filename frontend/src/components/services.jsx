@@ -24,7 +24,7 @@ export const Services = () => {
     {
         imgSrc: 'https://cdn.tailgrids.com/1.0/assets/images/blogs/blog-04/image-01.jpg',
         date: 'Sep 20, 2023',
-        title: 'Advanced Analytics for Businesses',
+        title: 'Browsing and VPN services AWS VPCs',
         description: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
       },
   ];
@@ -47,9 +47,9 @@ export const Services = () => {
             </div>
           </div>
         </div>
-        <div className="flex flex-wrap -mx-4 w-14">
-  {blogData.map((blog, index) => (
-   <div key={index} className="w-40 flex flex-wrap md:w-1/2 lg:w-1/4 px-4 mb-10">
+        <div className="flex flex-wrap mx-4 w-60">
+        {blogData.map((blog, index) => (
+         <div key={index} className="w-40 flex flex-wrap md:w-1/2 lg:w-1/4 px-4 mb-10">
       <Card className="max-w-[370px] mx-auto mb-8">
         <div className="relative top-0 md:max-w-2xl lg:mx-auto">
           <img

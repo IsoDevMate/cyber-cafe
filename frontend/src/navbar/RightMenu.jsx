@@ -1,8 +1,7 @@
 import React from "react";
 import { Menu, Avatar } from "antd";
 import { UserOutlined, CodeOutlined, LogoutOutlined } from "@ant-design/icons";
-import { SignInForm } from "../auth/signin";
-import { SignUpForm } from "../auth/signup";
+import {SignInBtn} from "../auth/SignInBtn";
 
 const RightMenu = ({ mode }) => {
   
@@ -24,7 +23,7 @@ const RightMenu = ({ mode }) => {
     <div style={{ display: "flex", alignItems: "center" }}>
       <Menu mode={mode} style={{ display: "flex", alignItems: "center", borderRight: 0 }}>
         <Menu.Item key="signin">
-          <SignInForm />
+          <SignInBtn />
         </Menu.Item>
       </Menu>
       <Menu mode={mode} style={{ display: "flex", alignItems: "center", borderLeft: 0 }}>

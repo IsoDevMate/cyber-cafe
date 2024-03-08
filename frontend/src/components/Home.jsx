@@ -75,8 +75,8 @@ export const Home = () => {
             </a>
           </div>
         </div>
-        <div className="hidden md:block">
-          <img src="./images/hero.png" alt="Hero" className="mx-auto" />
+        <div className=" md:block rounded">
+          <img src="https://cdn.tailgrids.com/1.0/assets/images/blogs/blog-02/image-01.jpg" alt="Hero" className="mx-auto" />
         </div>
       </div>
     </section>
