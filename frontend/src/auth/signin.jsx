@@ -86,16 +86,13 @@ export const SignIn = () => {
         console.log("User logged in:", user);
         alert("You have  successfully loggined in as ", user);
         setUser(user);
-        navigate("/home");
+        navigate("/");
       })
       .catch((error) => {
         console.log("Login error:", error.message);
         setErrorMessage("Login failed: invalid credentials ");
       });
   };
-
-
-
 
   return (
     <Card className="w-30">

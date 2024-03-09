@@ -33,7 +33,8 @@ export const Contact = () => {
         email,
         phone,
         message,
-      });
+      },{ merge: true}
+      );
     } catch (error) {
       console.error('Error adding document: ', error);
     }
@@ -41,20 +42,20 @@ export const Contact = () => {
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="brand text-center text-3xl font-bold mb-8">
-        <span className="text-white">Acme</span> Web Design
+        <span className="text-white">Ivan</span>Cyber Cafe Services
       </h1>
       <div className="wrapper bg-white shadow-md rounded-lg">
         <div className="company-info bg-blue-100 p-8 rounded-l-lg">
-          <h3 className="text-center text-2xl mb-4">Acme Web Design</h3>
+          <h3 className="text-center text-2xl mb-4">Ivan Cyber Cafe Services</h3>
           <ul>
             <li className="flex items-center mb-2">
-              <i className="fa fa-road mr-2"></i> 44 Something st
+              <i className="fa fa-road mr-2"></i> 27th Street Bypass
             </li>
             <li className="flex items-center mb-2">
-              <i className="fa fa-phone mr-2"></i> (555) 555-5555
+              <i className="fa fa-phone mr-2"></i> (254) 7345-56789
             </li>
             <li className="flex items-center">
-              <i className="fa fa-envelope mr-2"></i> test@acme.test
+              <i className="fa fa-envelope mr-2"></i> info@cyberivan.com
             </li>
           </ul>
         </div>

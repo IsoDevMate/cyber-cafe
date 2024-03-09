@@ -1,6 +1,11 @@
 import React from 'react';
 
-export const ProfilePage = () => {
+export const ProfilePage = ({ user }) => {
+  console.log('User object:', user);
+  if (!user || !user.displayName || !user.email) {
+    return <div>Loading user data...</div>;
+  }
+  
   return (
     <div className="my-4 max-w-screen-md mx-auto border px-4 shadow-xl sm:mx-4 sm:rounded-xl sm:px-4 sm:py-4">
       <div className="flex flex-col border-b py-4 sm:flex-row sm:items-start">
@@ -15,23 +20,24 @@ export const ProfilePage = () => {
           Save
         </button>
       </div>
-
       <div className="flex flex-col gap-4 border-b py-4 sm:flex-row">
         <p className="shrink-0 w-32 font-medium">Name</p>
         <input
           placeholder="First Name"
+          defaultValue={user?.displayName?.split(' ')[0] || ''}
           className="mb-2 w-full rounded-md border bg-white px-2 py-2 outline-none ring-blue-600 sm:mr-4 sm:mb-0 focus:ring-1"
         />
         <input
           placeholder="Last Name"
+          defaultValue={user?.displayName?.split(' ')[1] || ''}
           className="w-full rounded-md border bg-white px-2 py-2 outline-none ring-blue-600 focus:ring-1"
         />
       </div>
-
       <div className="flex flex-col gap-4 border-b py-4 sm:flex-row">
         <p className="shrink-0 w-32 font-medium">Email</p>
         <input
           placeholder="your.email@domain.com"
+          defaultValue={user?.email || ''}
           className="w-full rounded-md border bg-white px-2 py-2 outline-none ring-blue-600 focus:ring-1"
         />
       </div>
@@ -68,4 +74,6 @@ export const ProfilePage = () => {
     </div>
   );
 };
+
+
 

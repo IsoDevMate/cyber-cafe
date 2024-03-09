@@ -16,13 +16,17 @@ const RightMenu = ({ mode }) => {
   }
   , [user]);
 
+  const handleProfileClick = () => {
+    navigate('/profile');
+  };
+
   const handleLogout = () => {
     if (window.confirm("Are you sure you want to log out?")) {
       signOut(auth)
         .then(() => {
           console.log("User signed out");
-          setUser(null); // Set the user state to null after successful logout
-          navigate("/home", { replace: true });
+          setUser(null); 
+          navigate("/", { replace: true });
         })
         .catch((error) => {
           console.error("Logout error:", error.message);
@@ -40,11 +44,14 @@ const RightMenu = ({ mode }) => {
         )}
       </Menu>
       <Menu mode={mode} style={{ display: "flex", alignItems: "center", borderLeft: 0 }}>
-      {user && ( // Check if user exists
+      {user && ( 
         <Menu.SubMenu
          title={
         <>
-          <Avatar icon={<UserOutlined />} />
+            <Avatar
+        src={user?.photoURL || 'https://via.placeholder.com/150'}
+        icon={<UserOutlined />}
+      />
           <span className="username">{user.displayName || user.email}</span> {/* Display user name or email */}
         </>
       }
@@ -52,7 +59,7 @@ const RightMenu = ({ mode }) => {
         <Menu.Item key="project">
             <CodeOutlined /> Projects
           </Menu.Item>
-          <Menu.Item key="about-us">
+          <Menu.Item key="about-us" onClick={handleProfileClick}>
             <UserOutlined /> Profile
           </Menu.Item>
           <Menu.Item key="log-out" onClick={handleLogout}>
