@@ -4,9 +4,8 @@ export default withMT({
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   theme: {
     extend: {
-      colors: {
-        'primary-color': 'var(--primary-color)',
-        'secondary-color': 'var(--secondary-color)',
+      fontFamily: {
+        play: ["Play", "sans-serif"],
       },
     },
   },

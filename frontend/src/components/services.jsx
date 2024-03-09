@@ -2,6 +2,9 @@ import React from 'react';
 import { Card, CardHeader, CardBody, Typography } from "@material-tailwind/react";
 
 export const Services = () => {
+
+
+
   const blogData = [
     {
       imgSrc: 'https://cdn.tailgrids.com/1.0/assets/images/blogs/blog-01/image-01.jpg',
@@ -36,13 +39,13 @@ export const Services = () => {
           <div className="w-full px-4">
             <div className="text-center mx-auto mb-[60px] lg:mb-20 max-w-[510px]">
               <span className="font-bold text-lg text-primary mb-2 block">
-                Our Blogs
+              Ivan Cyber 
               </span>
               <h2 className="font-semibold text-3xl sm:text-4xl md:text-[40px] text-dark mb-4">
-                Our Recent News
+              Our Services
               </h2>
               <p className="text-base text-body-color">
-                There are many variations of passages of Lorem Ipsum available but the majority have suffered alteration in some form.
+                There are many variations of passages of Services to choose from.
               </p>
             </div>
           </div>

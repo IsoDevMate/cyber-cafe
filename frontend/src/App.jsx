@@ -13,6 +13,7 @@ import { ProfilePage } from './components/profile/profile';
 import { Queue } from './components/queue';
 import { ResetPassword } from './auth/resetpasssword';
 import { useAuth } from './auth/context/auth';
+import { Dashboard, Auth } from "./admin/layouts";
 // Create a new component for the container
 const Container = ({ children }) => (
   <div className="container mx-auto px-4 py-8">{children}</div>
@@ -27,6 +28,8 @@ function App() {
         <Routes>
         <Route path="/" element={<Home />} />
           <Route path="/landingpage" element={<LandingPage />} />
+          <Route path="/dashboard/*" element={<Dashboard />} />
+          <Route path="/auth/*" element={<Auth />} />
           <Route path="/signup" element={<SignUpForm />} />
           <Route path="/signin" element={<SignIn />} />
           <Route path="/about" element={<About />} />
