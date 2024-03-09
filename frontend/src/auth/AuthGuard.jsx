@@ -1,20 +1,22 @@
 import React from 'react';
-import { useAuth } from './context/auth';
+import { useAuth } from '../auth/context/auth';
 import { useNavigate } from 'react-router-dom';
 
 const AuthGuard = (Component) => {
   const AuthGuardedComponent = (props) => {
-    const { user } = useAuth();
+    const { user, isAuthLoading } = useAuth();
     const navigate = useNavigate();
 
     React.useEffect(() => {
-      if (!user) {
-        // If the user is not authenticated, redirect to the login page
+      if (!isAuthLoading && !user) {
         navigate('/signin', { replace: true });
       }
-    }, [user, navigate]);
+    }, [user, isAuthLoading, navigate]);
 
-    // If the user is authenticated, render the component
+    if (isAuthLoading) {
+      return <div>Loading...</div>;
+    }
+
     return user ? <Component {...props} /> : null;
   };
 

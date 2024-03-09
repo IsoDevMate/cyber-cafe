@@ -26,7 +26,6 @@ function App() {
       <Container>
         <Routes>
         <Route path="/" element={<Home />} />
-        
           <Route path="/landingpage" element={<LandingPage />} />
           <Route path="/signup" element={<SignUpForm />} />
           <Route path="/signin" element={<SignIn />} />
