@@ -13,8 +13,6 @@ export const AuthProvider = ({ children }) => {
       setUser(user);
       setIsAuthLoading(false);
     });
-
-  
     return unsubscribe;
   }, []);
 

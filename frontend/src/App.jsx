@@ -1,11 +1,11 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './navbar/index';
-import { About }from './components/Aboutus';
+import { About } from './components/Aboutus';
 import { Contact } from "./components/contactus"
 import Error from './Error';
 import { SignUpForm } from './auth/signup';
 import { SignIn } from './auth/signin';
-import{ Home } from './components/Home';
+import { Home } from './components/Home';
 import { Checkout } from './components/checkout/checkout';
 import { LandingPage } from './components/landingpage';
 import { Services } from './components/serviceoffered/layout';
@@ -14,29 +14,38 @@ import { Queue } from './components/queue';
 import { ResetPassword } from './auth/resetpasssword';
 import { useAuth } from './auth/context/auth';
 import { Dashboard, Auth } from "./admin/layouts";
+
 // Create a new component for the container
 const Container = ({ children }) => (
   <div className="container mx-auto px-4 py-8">{children}</div>
 );
 
+// Create a new component for the Navbar container
+const NavbarContainer = () => (
+  <div className="sticky top-0 z-50">
+    <Navbar />
+  </div>
+);
+
 function App() {
   const { user } = useAuth();
+
   return (
     <Router>
-      <Navbar />
+      <NavbarContainer />
       <Container>
         <Routes>
-        <Route path="/" element={<Home />} />
+          <Route path="/" element={<Home />} />
           <Route path="/landingpage" element={<LandingPage />} />
           <Route path="/dashboard/*" element={<Dashboard />} />
           <Route path="/auth/*" element={<Auth />} />
           <Route path="/signup" element={<SignUpForm />} />
           <Route path="/signin" element={<SignIn />} />
-          <Route path="/about" element={<About />} />
+          <Route path="/about" element={<About />} /> 
           <Route path="/contact" element={<Contact />} />
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/services" element={<Services />} />
-          <Route path="/profile" element={ <ProfilePage user={user} />} />
+          <Route path="/profile" element={<ProfilePage user={user} />} />
           <Route path="/resetpassword" element={<ResetPassword />} />
           <Route path="/queue" element={<Queue />} />
           <Route path="*" element={<Error />} />
@@ -47,4 +56,3 @@ function App() {
 }
 
 export default App;
-
