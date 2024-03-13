@@ -9,12 +9,17 @@ const jwt = require('jsonwebtoken');
 const verifyToken = require('./middlewares/verifytoken');
 const port = process.env.PORT || 3000;
 const bodyParser = require('body-parser');
-const cors = require('cors');
 const sendgridMail = require('@sendgrid/mail');
 //const { nanoid } = require('nanoid/non-secure');
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+const corsOptions = {
+  origin: '*', // Allow requests from all origins
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE', // Specify the allowed HTTP methods
+  allowedHeaders: 'Content-Type, Authorization' // Specify the allowed headers
+};
 
-app.use(cors());
+app.use(cors(corsOptions));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(bodyParser.urlencoded({ extended: true }));
