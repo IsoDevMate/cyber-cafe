@@ -1,10 +1,11 @@
 import React from 'react';
+import { useAuth } from '../../auth/context/auth';
+
 
 export const ProfilePage = ({ user }) => {
+  //const { user } = useAuth();
   console.log('User object:', user);
-  if (!user || !user.displayName || !user.email) {
-    return <div>Loading user data...</div>;
-  }
+
   
   return (
     <div className="my-4 max-w-screen-md mx-auto border px-4 shadow-xl sm:mx-4 sm:rounded-xl sm:px-4 sm:py-4">
@@ -41,7 +42,6 @@ export const ProfilePage = ({ user }) => {
           className="w-full rounded-md border bg-white px-2 py-2 outline-none ring-blue-600 focus:ring-1"
         />
       </div>
-
       <div className="flex flex-col gap-4 py-4 lg:flex-row">
         <div className="shrink-0 w-32 sm:py-4">
           <p className="mb-auto font-medium">Avatar</p>

@@ -6,12 +6,13 @@ import { MenuOutlined } from "@ant-design/icons";
 import { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
+
 const Navbar = () => {
   const [visible, setVisible] = useState(false);
   const navigate = useNavigate();
   const showDrawer = () => {
     setVisible(!visible);
-  };
+  }; 
 
   let { pathname: location } = useLocation();
 
@@ -28,7 +29,8 @@ const Navbar = () => {
                 className="brand-font cursor-pointer"
                 onClick={() => navigate("/")}
               >
-                Your Details
+                <img src="./fb.png" alt="logo" className="w-10 h-10" />
+
               </h3>
             </div>
             <div

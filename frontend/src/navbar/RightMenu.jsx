@@ -56,9 +56,6 @@ const RightMenu = ({ mode }) => {
         </>
       }
        >
-        <Menu.Item key="project">
-            <CodeOutlined /> Projects
-          </Menu.Item>
           <Menu.Item key="about-us" onClick={handleProfileClick}>
             <UserOutlined /> Profile
           </Menu.Item>

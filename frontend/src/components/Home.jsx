@@ -3,13 +3,17 @@ import { Services } from './services';
 import { Footer } from './footer';
 import { FaPlay } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
+import { useAuth } from '../auth/context/auth';
+import { useNavigate } from 'react-router-dom';
 
 export const Home = () => {
+  const { user } = useAuth();
+  const navigate = useNavigate();
   const handleGetStarted = () => {
     if (user) {
       navigate('/services');
     } else {
-      navigate('/login');
+      navigate('/signin');
     }
   };
   return (

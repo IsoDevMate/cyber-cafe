@@ -7,13 +7,15 @@ import { SignUpForm } from './auth/signup';
 import { SignIn } from './auth/signin';
 import { Home } from './components/Home';
 import { Checkout } from './components/checkout/checkout';
-import { LandingPage } from './components/landingpage';
+
 import { Services } from './components/serviceoffered/layout';
 import { ProfilePage } from './components/profile/profile';
 import { Queue } from './components/queue';
 import { ResetPassword } from './auth/resetpasssword';
 import { useAuth } from './auth/context/auth';
-import { Dashboard, Auth } from "./admin/layouts";
+import { StripePaymentPage } from './components/paymentspage/stripecheckout';
+import  {Success}  from '../src/components/paymentspage/success'
+import  {Cancel}  from '../src/components/paymentspage/cancel'
 
 // Create a new component for the container
 const Container = ({ children }) => (
@@ -29,16 +31,12 @@ const NavbarContainer = () => (
 
 function App() {
   const { user } = useAuth();
-
   return (
     <Router>
       <NavbarContainer />
       <Container>
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/landingpage" element={<LandingPage />} />
-          <Route path="/dashboard/*" element={<Dashboard />} />
-          <Route path="/auth/*" element={<Auth />} />
           <Route path="/signup" element={<SignUpForm />} />
           <Route path="/signin" element={<SignIn />} />
           <Route path="/about" element={<About />} /> 
@@ -48,6 +46,10 @@ function App() {
           <Route path="/profile" element={<ProfilePage user={user} />} />
           <Route path="/resetpassword" element={<ResetPassword />} />
           <Route path="/queue" element={<Queue />} />
+          <Route path="/success" element={<Success />} />
+          <Route path="/cancel" element={<Cancel />} />
+          <Route path="/queue/:service" element={<Queue />} />
+          <Route path="/stripe-payment" element={<StripePaymentPage />} />
           <Route path="*" element={<Error />} />
         </Routes>
       </Container>

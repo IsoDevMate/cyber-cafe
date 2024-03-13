@@ -1,10 +1,11 @@
 
 import  React, { useState } from 'react';
 import { db, collection, addDoc } from '../firebase';
-
+import  {useAuth } from '../auth/context/auth';
 export const Contact = () => {
   const [showAlert, setShowAlert] = useState(false);
-
+ const { user } = useAuth();
+ 
   const submitForm = async (e) => {
     e.preventDefault();
 

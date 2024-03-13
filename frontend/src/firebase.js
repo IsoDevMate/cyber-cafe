@@ -2,7 +2,8 @@ import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import { getFirestore, collection, addDoc } from 'firebase/firestore';
 import { GoogleAuthProvider } from 'firebase/auth';
-
+//use functions
+import { getFunctions, httpsCallable } from 'firebase/functions';
 const firebaseConfig = {
   apiKey: "AIzaSyCxBT8AA4MbE0TRsmE8J5pVcLMsJ-yhXG8",
   authDomain: "ivanprojo-72b52.firebaseapp.com",
@@ -16,4 +17,6 @@ export const app = initializeApp(firebaseConfig);
 export const  auth =getAuth(app);
 export const db =getFirestore(app);
 export const provider = new GoogleAuthProvider( );
+export const functions = getFunctions(app);
+export const sendBookingConfirmation = httpsCallable(functions, 'sendBookingConfirmation');
 export { collection, addDoc };
