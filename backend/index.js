@@ -43,7 +43,6 @@ const hashPassword = async (password) => {
   return hashedPassword;
 };
 
-
 app.post('/register', async (req, res) => {
   const { email, password } = req.body;
 
@@ -64,10 +63,6 @@ app.post('/register', async (req, res) => {
   }
 });
 
-//addAdmin()
-//.catch(error => {
- // console.error('Error adding admin:', error);
-//});
 
 app.get('/firestore', (req, res) => {
   res.json({ firestore: admin.firestore() });
@@ -378,6 +373,7 @@ const calculateTotalSales = (orders) => {
 const calculateTotalIncome = (orders) => {
   return orders.reduce((total, order) => total + order.amount, 0);
 };
+
 const generateCSVData = (orders, totalSales, totalIncome) => {
   const csvRows = [];
   const headers = ['Email', 'Service', 'Amount', 'Status', 'Created At'];
