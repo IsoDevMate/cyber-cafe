@@ -43,6 +43,11 @@ const hashPassword = async (password) => {
   return hashedPassword;
 };
 
+app.get('/', (req, res) => {
+  res.send('Welcome to the Cyber Cafe API');
+})
+
+
 app.post('/register', async (req, res) => {
   const { email, password } = req.body;
 
