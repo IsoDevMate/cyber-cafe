@@ -272,7 +272,7 @@ app.get('/totalincome',  async (req, res) => {
   ordersSnapshot.forEach(doc => {
     totalIncome += doc.data().amount;
   });
-
+  
   res.json({ totalIncome });
 });
 
