@@ -16,7 +16,7 @@ import { useAuth } from './auth/context/auth';
 import { StripePaymentPage } from './components/paymentspage/stripecheckout';
 import  {Success}  from '../src/components/paymentspage/success'
 import  {Cancel}  from '../src/components/paymentspage/cancel'
-
+import { BackButtonProvider } from '../src/btncontext/btn';
 // Create a new component for the container
 const Container = ({ children }) => (
   <div className="container mx-auto px-4 py-8">{children}</div>
@@ -25,7 +25,9 @@ const Container = ({ children }) => (
 // Create a new component for the Navbar container
 const NavbarContainer = () => (
   <div className="sticky top-0 z-50">
+    <BackButtonProvider>
     <Navbar />
+    </BackButtonProvider>
   </div>
 );
 

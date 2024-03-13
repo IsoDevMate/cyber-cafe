@@ -5,11 +5,11 @@ import RightMenu from "./RightMenu";
 import { MenuOutlined } from "@ant-design/icons";
 import { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-
-
+import { useBackButton } from '../btncontext/btn';
 const Navbar = () => {
   const [visible, setVisible] = useState(false);
   const navigate = useNavigate();
+  const { handleBackClick } = useBackButton();
   const showDrawer = () => {
     setVisible(!visible);
   }; 
@@ -24,6 +24,7 @@ const Navbar = () => {
     <>
       <nav className="navbar">
         <Layout  className="nav-header shadow-md">
+       
             <div className="logo">
               <h3
                 className="brand-font cursor-pointer"
@@ -37,6 +38,7 @@ const Navbar = () => {
               className="navbar-menu"
               style={{ display: "flex", justifyContent: "space-between" }}
             >
+               <button onClick={handleBackClick}>Back</button>
               <div className="leftMenu">
                 <LeftMenu mode={"horizontal"} />
               </div>

@@ -12,6 +12,7 @@ const bodyParser = require('body-parser');
 const sendgridMail = require('@sendgrid/mail');
 //const { nanoid } = require('nanoid/non-secure');
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+const cors = require('cors');
 const corsOptions = {
   origin: '*', // Allow requests from all origins
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE', // Specify the allowed HTTP methods
