@@ -24,11 +24,11 @@ export const Queue = () => {
 
   const sendEmailToUser = async (email, service, startTime, bill) => {
     try {
-      const sessionResponse = await axios.post('http://localhost:3000/create-checkout-session', { amount: bill });
+      const sessionResponse = await axios.post('https://cyber-cafe-2.onrender.com/create-checkout-session', { amount: bill });
       const sessionId = sessionResponse.data.sessionId;
-      const stripePaymentLink = `http://localhost:5173/stripe-payment?session_id=${sessionId}`;
+      const stripePaymentLink = `https://cyber-cafe-seven.vercel.app/stripe-payment?session_id=${sessionId}`;
 
-      const response = await axios.post('http://localhost:3000/send-email', {
+      const response = await axios.post('https://cyber-cafe-2.onrender.com/send-email', {
         email,
         service,
         startTime,
@@ -54,13 +54,13 @@ export const Queue = () => {
 
     try {
       // Send the email, service, and amount to the server
-      const sessionResponse = await axios.post('http://localhost:3000/create-checkout-session', {
+      const sessionResponse = await axios.post('https://cyber-cafe-2.onrender.com/create-checkout-session', {
         amount: calculatedBill,
         email: email,
         service: service,
       });
       const sessionId = sessionResponse.data.sessionId;
-      const stripePaymentLink = `http://localhost:5173/stripe-payment?session_id=${sessionId}`;
+      const stripePaymentLink = `https://cyber-cafe-seven.vercel.app/stripe-payment?session_id=${sessionId}`;
 
       // Store the bill in the local storage
       localStorage.setItem('bill', calculatedBill);
