@@ -121,7 +121,6 @@ app.post('/send-email', async (req, res) => {
 });
 
 
-
 app.post('/create-checkout-session', async (req, res) => {
   const { amount, email, service } = req.body;
  
