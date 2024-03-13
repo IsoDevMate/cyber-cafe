@@ -130,7 +130,7 @@ app.post('/create-checkout-session', async (req, res) => {
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       mode: 'payment',
-      success_url: `${process.env.DOMAIN}/success?email=${email}&amount=${amount}&service=${service}`,
+     success_url :`${process.env.DOMAIN}/success?email=${encodeURIComponent(email)}&amount=${amount}&service=${encodeURIComponent(service)}`,
       cancel_url: `${process.env.DOMAIN}/cancel`,
       //customer: user.stripeCustomerId,
       line_items: [
@@ -192,7 +192,6 @@ app.get('/cancel', async (req, res) => {
     res.status(500).json({ error: 'An error occurred' });
   }
 });
-
 
 app.get('/completed-orders', async (req, res) => {
   try {
@@ -272,7 +271,7 @@ app.get('/totalincome',  async (req, res) => {
   ordersSnapshot.forEach(doc => {
     totalIncome += doc.data().amount;
   });
-  
+
   res.json({ totalIncome });
 });
 
@@ -335,39 +334,72 @@ app.get('/totalsales', async (req, res) => {
 });
 
 // 6. CSV Report Generation
-app.get('/ordersreport',  async (req, res) => {
-  const ordersSnapshot = await db.collection('orders').get();
-  const orders = [];
+app.get('/ordersreport', async (req, res) => {
+  try {
+    const { startDate, endDate, limit } = req.query;
+    const orders = await getOrdersFromFirestore(startDate, endDate, limit);
+    const totalSales = calculateTotalSales(orders);
+    const totalIncome = calculateTotalIncome(orders);
 
-  ordersSnapshot.forEach(doc => {
-    orders.push(doc.data());
-  });
-
-  const csvWriter = csvWriter({
-    path: 'path/to/orders-report.csv',
-    header: [
-      { id: 'id', title: 'Order ID' },
-      { id: 'userId', title: 'User ID' },
-      { id: 'amount', title: 'Amount' },
-      { id: 'status', title: 'Status' },
-      { id: 'createdAt', title: 'Created At' },
-    ]
-  });
-
-  csvWriter.writeRecords(orders)
-    .then(() => {
-      res.download('path/to/orders-report.csv', 'orders-report.csv', (err) => {
-        if (err) {
-          console.error('Error downloading report:', err);
-          res.status(500).send('Error downloading report');
-        }
-      });
-    })
-    .catch(err => {
-      console.error('Error writing report:', err);
-      res.status(500).send('Error writing report');
-    });
+    const csvData = generateCSVData(orders, totalSales, totalIncome);
+    res.setHeader('Content-Type', 'text/csv');
+    res.setHeader('Content-Disposition', 'attachment; filename="orders-report.csv"');
+    res.status(200).send(csvData);
+  } catch (error) {
+    console.error('Error downloading report:', error);
+    res.status(500).send('Error downloading report');
+  }
 });
+
+const getOrdersFromFirestore = async (startDate, endDate, limit) => {
+  const validStartDate = startDate ? new Date(startDate) : new Date(0); // Use epoch if startDate is invalid
+  const validEndDate = endDate ? new Date(endDate) : new Date(); // Use current date if endDate is invalid
+
+  if (isNaN(validStartDate.getTime()) || isNaN(validEndDate.getTime())) {
+    // Handle invalid date format
+    return res.status(400).json({ error: 'Invalid date format' });
+  }
+
+  const query = db.collection('orders')
+    .where('createdAt', '>=', validStartDate)
+    .where('createdAt', '<=', validEndDate)
+    .limit(parseFloat(limit));
+
+  const snapshot = await query.get();
+  const orders = [];
+  snapshot.forEach(doc => orders.push(doc.data()));
+  return orders;
+};
+
+const calculateTotalSales = (orders) => {
+  return orders.reduce((total, order) => total + order.amount, 0);
+};
+
+const calculateTotalIncome = (orders) => {
+  return orders.reduce((total, order) => total + order.amount, 0);
+};
+const generateCSVData = (orders, totalSales, totalIncome) => {
+  const csvRows = [];
+  const headers = ['Email', 'Service', 'Amount', 'Status', 'Created At'];
+  csvRows.push(headers.join(','));
+
+  orders.forEach(order => {
+    const row = [
+      order.email || '',
+      order.service || '',
+      order.amount,
+      order.status,
+      order.createdAt.toDate().toISOString(),
+    ];
+    csvRows.push(row.join(','));
+  });
+
+  csvRows.push('\n');
+  csvRows.push(`Total Sales,${totalSales}`);
+  csvRows.push(`Total Income,${totalIncome}`);
+
+  return csvRows.join('\n');
+};
 
 app.listen(port, () => {
   console.log(`Server started on port ${port}`);

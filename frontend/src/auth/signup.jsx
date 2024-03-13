@@ -65,7 +65,7 @@ export const SignUpForm = () => {
 
   const handleSignUp = async (e) => {
     e.preventDefault();
-
+  
     if (
       !validateEmail(email) ||
       password.length < MIN_PASSWORD_LENGTH ||
@@ -76,35 +76,32 @@ export const SignUpForm = () => {
       );
       return;
     }
-    try{
-     createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        const user = userCredential.user;
-        // Signed up
-        console.log(userCredential.user);
-        setUser(user);
-        alert("User created successfully");
-        navigate("/signin");
-      })
-      .catch((err) => {
-        console.log("Login error:", err.message);
-        setErrorMessage("Signup failed. Please try again.");
-        console.log(err.code);
-        alert(err.code);
-      }
-      )
-
-      // Add user data to Firestore
-      const usersCollection = collection(db, "users");
-      const user = auth.currentUser;
-      await addDoc(usersCollection, {
-        name,
-        email: user.email,
-        // Add other user data fields here
-      });
-
-      console.log("Sign up successful:", user);
-      navigate("/dashboard"); 
+  
+    try {
+      createUserWithEmailAndPassword(auth, email, password)
+        .then(async (userCredential) => {
+          const user = userCredential.user;
+          // Signed up
+          console.log(userCredential.user);
+          setUser(user);
+          alert("User created successfully");
+  
+          // Add user data to Firestore
+          const usersCollection = collection(db, "users");
+          await addDoc(usersCollection, {
+            name,
+            email: user.email,
+            // Add other user data fields here
+          });
+  
+          navigate("/signin");
+        })
+        .catch((err) => {
+          console.log("Login error:", err.message);
+          setErrorMessage("Signup failed. Please try again.");
+          console.log(err.code);
+          alert(err.code);
+        });
     } catch (error) {
       console.error("Sign up error:", error);
       setErrorMessage("Sign up failed. Please try again.");
