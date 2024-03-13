@@ -6,6 +6,7 @@ import { MenuOutlined } from "@ant-design/icons";
 import { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useBackButton } from '../btncontext/btn';
+import { FaArrowLeft } from 'react-icons/fa';
 const Navbar = () => {
   const [visible, setVisible] = useState(false);
   const navigate = useNavigate();
@@ -25,23 +26,26 @@ const Navbar = () => {
       <nav className="navbar">
         <Layout  className="nav-header shadow-md">
        
-            <div className="logo">
-              <h3
-                className="brand-font cursor-pointer"
-                onClick={() => navigate("/")}
-              >
-                <img src="./fb.png" alt="logo" className="w-10 h-10" />
-
-              </h3>
-            </div>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <div style={{ marginRight: '1rem' }}>
+          <h3
+             className="brand-font cursor-pointer"
+             onClick={() => navigate("/")}
+            >
+            <img src="./fb.png" alt="logo" className="w-10 h-10" />
+          </h3>
+           </div>
             <div
               className="navbar-menu"
               style={{ display: "flex", justifyContent: "space-between" }}
             >
-               <button onClick={handleBackClick}>Back</button>
-              <div className="leftMenu">
-                <LeftMenu mode={"horizontal"} />
-              </div>
+              <button onClick={handleBackClick} style={{ display: 'flex', alignItems: 'center' }}>
+              <FaArrowLeft style={{ marginRight: '0.5rem' }} />
+              Go Back
+              </button>
+               <div className="leftMenu" style={{ marginLeft: '1rem' }}>
+               <LeftMenu mode={"horizontal"} />
+               </div>
               <div className="rightMenu">
                 <RightMenu mode={"horizontal"} />
               </div>
@@ -66,6 +70,7 @@ const Navbar = () => {
               <RightMenu mode={"inline"} />
             </Drawer>
         
+        </div>
         </Layout>
       </nav>
     </>

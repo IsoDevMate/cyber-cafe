@@ -20,6 +20,7 @@ export const Queue = () => {
   const [preferredServiceTime, setPreferredServiceTime] = useState('');
   const [showDialog, setShowDialog] = useState(false);
   const [bill, setBill] = useState(0);
+  const [isLoading, setIsLoading] = useState(false)
   const hourlyRate = 20;
 
   const sendEmailToUser = async (email, service, startTime, bill) => {
@@ -69,6 +70,8 @@ export const Queue = () => {
       await sendEmailToUser(email, service, startTime, calculatedBill);
     } catch (error) {
       console.error('Error creating Stripe session or sending email:', error);
+    } finally {
+      setIsLoading(false); // Set loading state to false after the process is complete
     }
   };
 
@@ -89,7 +92,15 @@ export const Queue = () => {
             value={preferredServiceTime}
             onChange={(e) => setPreferredServiceTime(e.target.value)}
           />
-          <Button onClick={handleBooking}>Proceed to Checkout</Button>
+          <Button onClick={handleBooking} disabled={isLoading}>
+            {isLoading ? (
+              <>
+                <Spinner className="mr-2" /> Processing...
+              </>
+            ) : (
+              'Proceed to Checkout'
+            )}
+          </Button>
         </CardBody>
       </Card>
       <Dialog open={showDialog} handler={() => setShowDialog(false)}>
