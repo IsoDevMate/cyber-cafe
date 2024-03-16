@@ -12,7 +12,7 @@ import {
   CardBody,
 } from '@material-tailwind/react';
 import axios from 'axios';
-
+import { PuffLoader } from 'react-spinners';
 export const Queue = () => {
   const [service, setService] = useState(['computer', 'internet', 'printing']);
   const [startTime, setStartTime] = useState('');
@@ -61,6 +61,7 @@ export const Queue = () => {
         email: email,
         service: service,
       });
+      
       console.log('sessionres for vercel',sessionResponse)
       const sessionId = sessionResponse.data.sessionId;
       const stripePaymentLink = `https://cyber-cafe-seven.vercel.app/stripe-payment?session_id=${sessionId}`;
@@ -98,7 +99,7 @@ export const Queue = () => {
           <Button onClick={handleBooking} disabled={isLoading}>
             {isLoading ? (
               <>
-                <Spinner className="mr-2" /> Processing...
+                <PuffLoader color="#EBF0EF"  className="mr-2" /> Processing...
               </>
             ) : (
               'Proceed to Checkout'

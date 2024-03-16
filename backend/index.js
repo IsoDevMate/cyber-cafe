@@ -10,17 +10,19 @@ const verifyToken = require('./middlewares/verifytoken');
 const port = process.env.PORT || 3000;
 const bodyParser = require('body-parser');
 const sendgridMail = require('@sendgrid/mail');
+const multer = require('multer');
+const path = require('path');
+const firebase = require('firebase-admin');
 //const { nanoid } = require('nanoid/non-secure');
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const cors = require('cors');
 const corsOptions = {
-  origin: '*', // Allow requests from all origins
-  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE', // Specify the allowed HTTP methods
-  allowedHeaders: 'Content-Type, Authorization' // Specify the allowed headers
+  origin: '*', 
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE', 
+  allowedHeaders: 'Content-Type, Authorization' 
 };
 
 app.use(cors(corsOptions));
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -35,10 +37,17 @@ const generateToken = (email) => {
 
 // Initialize Firebase Admin SDK
 admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount)
+  credential: admin.credential.cert(serviceAccount),
+  storageBucket: 'ivanprojo-72b52.appspot.com'
 });
 
 const db = admin.firestore();
+
+const storage = firebase.storage();
+
+ const upload = multer({
+   storage: multer.memoryStorage(),
+ });
 
 const ordersCollection = db.collection('orders');
 
@@ -358,8 +367,8 @@ app.get('/ordersreport', async (req, res) => {
 });
 
 const getOrdersFromFirestore = async (startDate, endDate, limit) => {
-  const validStartDate = startDate ? new Date(startDate) : new Date(0); // Use epoch if startDate is invalid
-  const validEndDate = endDate ? new Date(endDate) : new Date(); // Use current date if endDate is invalid
+  const validStartDate = startDate ? new Date(startDate) : new Date(0);
+  const validEndDate = endDate ? new Date(endDate) : new Date(); 
 
   if (isNaN(validStartDate.getTime()) || isNaN(validEndDate.getTime())) {
     // Handle invalid date format
@@ -407,6 +416,26 @@ const generateCSVData = (orders, totalSales, totalIncome) => {
 
   return csvRows.join('\n');
 };
+
+app.post('/upload', upload.single('image'), async (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ success: false, message: 'No file uploaded.' });
+  }
+
+  const file = req.file;
+  const fileExtension = path.extname(file.originalname);
+  const fileName = `${Date.now()}${fileExtension}`;
+
+  try {
+    const fileRef = storage.bucket().file(`uploads/${fileName}`);
+    await fileRef.save(file.buffer, { contentType: file.mimetype });
+    const imageUrl = await fileRef.getSignedUrl({ action: 'read', expires: '03-09-2491' });
+    res.json({ success: true, image_url: imageUrl[0] });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: 'Failed to upload file.' });
+  }
+});
 
 app.listen(port, () => {
   console.log(`Server started on port ${port}`);

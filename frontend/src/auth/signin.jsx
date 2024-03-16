@@ -14,6 +14,7 @@ import { auth } from "../../src/firebase";
 import { useNavigate,Link } from "react-router-dom";
 import { useAuth } from "../../src/auth/context/auth";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { PuffLoader } from "react-spinners";
 
 export const SignIn = () => {
  // const [showPassword, setShowPassword] = useState(false);
@@ -25,6 +26,7 @@ export const SignIn = () => {
   const [passwordError, setPasswordError] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false)
 
   const navigate = useNavigate();
   const { setUser } = useAuth();
@@ -79,7 +81,7 @@ export const SignIn = () => {
       );
       return;
     }
-
+    setIsLoading(true);
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         const user = userCredential.user;
@@ -91,11 +93,17 @@ export const SignIn = () => {
       .catch((error) => {
         console.log("Login error:", error.message);
         setErrorMessage("Login failed: invalid credentials ");
+      }).
+      finally(() => {
+        setIsLoading(false);
       });
+  
+
   };
 
   return (
-    <Card className="w-30">
+    <>
+    <Card className="mx-auto w-full max-w-[24rem]">
       <CardHeader
         variant="gradient"
         color="gray"
@@ -144,7 +152,11 @@ export const SignIn = () => {
       </CardBody>
       <CardFooter className="pt-0">
         <Button variant="gradient" onClick={handleLogin}  fullWidth>
-          Sign In
+          {isLoading ? (
+            <PuffLoader color="#EBF0EF"  />
+          ) : (
+            'Sign In'
+          )}
         </Button>
         <Typography
           variant="small"
@@ -167,6 +179,7 @@ export const SignIn = () => {
         </Typography>
       </CardFooter>
     </Card>
+    </>
   );
 }
 

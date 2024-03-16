@@ -24,8 +24,7 @@ const Navbar = () => {
   return (
     <>
       <nav className="navbar">
-        <Layout  className="nav-header shadow-md">
-       
+        <Layout className="layout">
         <div style={{ display: 'flex', alignItems: 'center' }}>
           <div style={{ marginRight: '1rem' }}>
           <h3
@@ -66,7 +65,7 @@ const Navbar = () => {
               visible={visible}
               style={{ zIndex: 99999 }}
             >
-              {/* <LeftMenu mode={"inline"} /> */}
+             
               <RightMenu mode={"inline"} />
             </Drawer>
         

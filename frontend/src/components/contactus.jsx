@@ -1,7 +1,8 @@
 
 import  React, { useState } from 'react';
-import { db, collection, addDoc } from '../firebase';
+import { db, collection, addDoc,doc ,getDoc} from '../firebase';
 import  {useAuth } from '../auth/context/auth';
+
 export const Contact = () => {
   const [showAlert, setShowAlert] = useState(false);
  const { user } = useAuth();
@@ -26,19 +27,23 @@ export const Contact = () => {
   };
 
   const saveMessage = async (name, company, email, phone, message) => {
-    try {
-      const messagesRef = collection(db, 'messages');
-      await addDoc(messagesRef, {
-        name,
-        company,
-        email,
-        phone,
-        message,
-      },{ merge: true}
-      );
-    } catch (error) {
-      console.error('Error adding document: ', error);
-    }
+      try {
+        const messagesRef = collection(db, 'messages');
+        const docRef = await addDoc(messagesRef, {
+          name,
+          company,
+          email,
+          phone,
+          message,
+        },{ merge: true}
+        );
+        const docSnap = await getDoc(docRef);
+        console.log('Document successfully written!', user.uid, "Your Messages are:", docSnap.data());
+      } catch (error) {
+        console.error('Error adding document: ', error);
+      }
+    
+    
   };
   return (
     <div className="container mx-auto px-4 py-8">

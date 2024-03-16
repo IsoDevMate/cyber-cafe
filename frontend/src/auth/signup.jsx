@@ -13,7 +13,7 @@ import { auth, db, collection, addDoc } from "../firebase";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/context/auth";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-
+import { PuffLoader } from "react-spinners";
 export const SignUpForm = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -24,6 +24,7 @@ export const SignUpForm = () => {
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [confirmPasswordError, setConfirmPasswordError] = useState("");
+  const [isLoading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { setUser } = useAuth();
   const MIN_PASSWORD_LENGTH = 8;
@@ -78,6 +79,7 @@ export const SignUpForm = () => {
     }
   
     try {
+      setLoading(true);
       createUserWithEmailAndPassword(auth, email, password)
         .then(async (userCredential) => {
           const user = userCredential.user;
@@ -106,6 +108,7 @@ export const SignUpForm = () => {
       console.error("Sign up error:", error);
       setErrorMessage("Sign up failed. Please try again.");
     }
+    setLoading(false);
   };
 
   
@@ -176,7 +179,11 @@ export const SignUpForm = () => {
       </CardBody>
       <CardFooter className="pt-0">
         <Button variant="gradient" fullWidth onClick={handleSignUp}>
-          Sign Up
+        {isLoading ? (
+            <PuffLoader color="#EBF0EF"  className="mr-2" />
+          ) : (
+            'Sign In'
+          )}
         </Button>
         <Typography variant="small" className="mt-4 flex justify-center">
           Already have an account?

@@ -52,7 +52,7 @@ const RightMenu = ({ mode }) => {
         src={user?.photoURL || 'https://via.placeholder.com/150'}
         icon={<UserOutlined />}
       />
-          <span className="username">{user.displayName || user.email}</span> {/* Display user name or email */}
+          <span className="username">{user.displayName || user.email}</span> 
         </>
       }
        >
