@@ -14,7 +14,7 @@ import {
 import axios from 'axios';
 import { PuffLoader } from 'react-spinners';
 export const Queue = () => {
-  const [service, setService] = useState(['computer', 'internet', 'printing']);
+  const [service, setService] = useState('');
   const [startTime, setStartTime] = useState('');
   const [email, setEmail] = useState('');
   const [preferredServiceTime, setPreferredServiceTime] = useState('');
