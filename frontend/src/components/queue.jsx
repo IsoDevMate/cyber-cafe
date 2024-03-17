@@ -28,7 +28,7 @@ export const Queue = () => {
       const sessionResponse = await axios.post('https://cyber-cafe-2.onrender.com/create-checkout-session', { amount: bill });
       const sessionId = sessionResponse.data.sessionId;
       console.log('Session ID:', sessionId)
-      const stripePaymentLink = `http://localhost:3000/stripe-payment?session_id=${sessionId}`;
+      const stripePaymentLink = `http://localhost:5173/stripe-payment?session_id=${sessionId}`;
        
       const response = await axios.post('https://cyber-cafe-2.onrender.com/send-email', {
         email,
@@ -64,7 +64,7 @@ export const Queue = () => {
       
       console.log('sessionres for vercel',sessionResponse)
       const sessionId = sessionResponse.data.sessionId;
-      const stripePaymentLink = `http://localhost:3000/stripe-payment?session_id=${sessionId}`;
+      const stripePaymentLink = `http://localhost:5173/stripe-payment?session_id=${sessionId}`;
 
       localStorage.setItem('bill', calculatedBill);
 
