@@ -92,37 +92,24 @@ const updateUserProfilePicture = async (pictureURL) => {
 */
 import React, { useState } from 'react';
 import { useAuth } from '../../auth/context/auth';
-import { storage } from '../../firebase';
+import { storage,db} from '../../firebase';
+import {getDoc,addDoc,doc,updateDoc, collection, getDocs, query, where, orderBy, limit, Timestamp} from 'firebase/firestore';
+import { PuffLoader } from 'react-spinners';
+import { FaCloudUploadAlt } from "react-icons/fa";
+import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage"
+
 
 export const ProfilePage = ({ user }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [profilePicture, setProfilePicture] = useState(user?.photoURL || '');
-
-  const handleImageUpload = async (e) => {
-    setIsLoading(true);
-    const file = e.target.files[0];
-    const fileExtension = file.name.split('.').pop();
-    const fileName = `${Date.now()}.${fileExtension}`;
-
-    try {
-      const fileRef = storage.ref(`profiles/${fileName}`);
-      await fileRef.put(file);
-      const downloadURL = await fileRef.getDownloadURL();
-      setProfilePicture(downloadURL);
-
-      await updateUserProfilePicture(downloadURL);
-    } catch (error) {
-      console.error('Error uploading image:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const updateUserProfilePicture = async (pictureURL) => {
-    const { user } = useAuth(); 
-    if (user) {
+  const { user: authUser } = useAuth(); 
+   console.log("userID",authUser.uid)
+ 
+ const updateUserProfilePicture = async (pictureURL) => {
+    if (authUser) {
       try {
-        await db.collection('users').doc(user.uid).update({
+        const userDocRef = doc(db, 'users', authUser.uid);
+        await updateDoc(userDocRef, {
           profilePicture: pictureURL,
         });
         console.log('Profile picture updated successfully');
@@ -133,10 +120,29 @@ export const ProfilePage = ({ user }) => {
       console.error('User not authenticated');
     }
   };
+  const handleImageUpload = async (e) => {
+    setIsLoading(true);
+    const file = e.target.files[0];
+    const fileExtension = file.name.split('.').pop();
+    const fileName = `${Date.now()}.${fileExtension}`;
+
+    try {
+      const fileRef = ref(storage, `/profile/${fileName}`);
+      const downloadURL = await uploadBytesResumable(fileRef, file);
+      setProfilePicture(downloadURL);
+
+      await updateUserProfilePicture(downloadURL);
+    } catch (error) {
+      console.error('Error uploading image:', error);
+    } finally {
+      setIsLoading(false);
+    }
+
+  };
+
 
   return (
     <div className="my-4 max-w-screen-md mx-auto border px-4 shadow-xl sm:mx-4 sm:rounded-xl sm:px-4 sm:py-4">
-      {/* ... */}
       <div className="flex flex-col gap-4 py-4 lg:flex-row">
         <div className="shrink-0 w-32 sm:py-4">
           <p className="mb-auto font-medium">Avatar</p>
@@ -148,14 +154,14 @@ export const ProfilePage = ({ user }) => {
             className="relative h-16 w-16 cursor-pointer rounded-full overflow-hidden"
           >
             {isLoading ? (
-              <div className="absolute inset-0 flex items-center justify-center bg-gray-200">
-                <span className="animate-spin rounded-full h-5 w-5 border-2 border-gray-500" />
-              </div>
+              <PuffLoader size={32} color="#3B82F6" />
             ) : (
-              <img
-                src={profilePicture}
-                className="h-16 w-16 rounded-full object-cover"
-                alt="Avatar"
+              <FaCloudUploadAlt
+                color={'#3B82F6'}
+                title={"Upload"}
+                className="absolute h-full w-full"
+                height="100%"
+                width="100%"
               />
             )}
             <input

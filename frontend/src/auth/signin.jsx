@@ -44,14 +44,11 @@ export const SignIn = () => {
   };
 
 
-
-
   const handleForgotPassword = () => {
     // Add your forgot password logic here
     console.log("Forgot password clicked");
     navigate("/resetpassword");
   };
-
 
 
   const handlePasswordChange = (e) => {
@@ -66,7 +63,6 @@ export const SignIn = () => {
 
 
 
-  
   const handleEmailChange = (e) => {
     const value = e.target.value;
     setEmail(value);

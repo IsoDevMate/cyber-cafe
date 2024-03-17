@@ -28,7 +28,7 @@ export const Queue = () => {
       const sessionResponse = await axios.post('https://cyber-cafe-2.onrender.com/create-checkout-session', { amount: bill });
       const sessionId = sessionResponse.data.sessionId;
       console.log('Session ID:', sessionId)
-      const stripePaymentLink = `https://cyber-cafe-seven.vercel.app/stripe-payment?session_id=${sessionId}`;
+      const stripePaymentLink = `http://localhost:3000/stripe-payment?session_id=${sessionId}`;
        
       const response = await axios.post('https://cyber-cafe-2.onrender.com/send-email', {
         email,
@@ -64,12 +64,11 @@ export const Queue = () => {
       
       console.log('sessionres for vercel',sessionResponse)
       const sessionId = sessionResponse.data.sessionId;
-      const stripePaymentLink = `https://cyber-cafe-seven.vercel.app/stripe-payment?session_id=${sessionId}`;
+      const stripePaymentLink = `http://localhost:3000/stripe-payment?session_id=${sessionId}`;
 
-      // Store the bill in the local storage
       localStorage.setItem('bill', calculatedBill);
 
-      // Send an email to the user
+ 
       await sendEmailToUser(email, service, startTime, calculatedBill);
     } catch (error) {
       console.error('Error creating Stripe session or sending email:', error);
@@ -91,7 +90,7 @@ export const Queue = () => {
           <Input label="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
           <Input
             label="Preferred Service Time (in minutes)"
-            type="okoth9889
+            type="
             number"
             value={preferredServiceTime}
             onChange={(e) => setPreferredServiceTime(e.target.value)}
