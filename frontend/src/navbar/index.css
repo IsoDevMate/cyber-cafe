@@ -1,0 +1,250 @@
+
+.navbar{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 16px;
+    padding-bottom: 5px;
+    margin-bottom: 10px;
+    align-items: center;
+    z-index: 2;
+    border-bottom-left-radius: 20px; /* Adjust according to your design */
+    border-bottom-right-radius: 20px; /* Adjust according to your design */
+    transition: top 1.5s; /* Smooth transition when navbar sticks */
+    box-shadow: 0 1px 23px 5px rgba(63, 63, 63, 0.549); 
+}
+.navbar.sticky {
+    position: sticky;
+    top: 0;
+    z-index: 1000; /* Make sure navbar stays on top */
+    background: white;
+    padding: 10px;
+    transition: top 10s ease-in-out 20s; /* Smooth animation with a delay */
+}
+.nav-logo{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.hambuger{
+    display: none;
+}
+.nav-logo p{
+    color: #171717;
+    font-size: 38px;
+    font-weight: 600;
+}
+.nav-menu{
+    display: flex;
+    align-items: center;
+    list-style: none;
+    gap: 50px;
+    color: #626262;
+    font-size: 20px;
+    font-weight: 500;
+}
+.nav-menu li{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    cursor: pointer;
+}
+.nav-menu hr{
+    border: none;
+    width: 80%;
+    height: 3px;
+    border-radius: 10px;
+    background: black;
+}
+.nav-login-cart{
+    display: flex;
+    align-items: center;
+    gap: 45px;
+}
+.nav-login-cart button{
+    width: 140px;
+    height: 45px;
+    outline: none;
+    border: none;
+    border-radius: 75px;
+    color: white;
+    font-size: 20px;
+    font-weight: 500;
+    background: black;
+    cursor: pointer;
+}
+.cart{
+    font-size: 34px;
+    color: black;
+    cursor: pointer;
+
+}
+.nav-user-dropdown{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 13px;
+}
+.nav-user-info span{
+    display: none;
+}
+.nav-user-info .nav-user-icon{
+    font-size: 40px;
+    cursor: pointer;
+}
+/* ADD HOVER EFFECT */
+.nav-login-cart button:active{
+    background: #f3f3f3;
+}
+.nav-cart-count{
+    height: 22px;
+    width: 22px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: -35px;
+    margin-left: -35px;
+    border-radius: 11px;
+    font-size: 14px;
+    background: black;
+    color: white;
+}
+.nav-dropdown{
+    display: none;
+}
+@media(max-width:1280px){
+    .navbar{
+        padding: 12px 50px;
+    }
+    .nav-logo img{
+        width: 40px;
+    }
+    .nav-logo p{
+        font-size: 25px;
+    }
+    .nav-menu{
+        gap: 30px;
+        font-size: 20px;
+
+    }
+    .nav-login-cart{
+        gap: 30px;
+        
+    }
+    .nav-login-cart button{
+        width: 120px;
+        height: 45px;
+        font-size: 16px;
+    }
+    .nav-cart-count{
+        margin-left: -40px;
+        font-size: 12px;
+    }
+}
+@media(max-width:1024px){
+    .navbar{
+        padding: 12px 30px;
+    }
+    .nav-menu{
+        gap: 20px;
+        font-size: 14px;
+    }
+    .nav-login-cart button{
+        width: 80px;
+        height: 35px;
+        font-size: 14px;
+    }
+    .nav-login-cart img{
+        width: 30px;
+
+    }
+    .nav-cart-count{
+        width: 18px;
+        height: 18px;
+        
+    }
+}
+@media(max-width:800px){
+    .navbar{
+        padding: 10px 0px;
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+
+    }
+    .nav-dropdown{
+        display: block;
+        transition: 0.5s;
+        font-size: 30px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+    .nav-menu{
+        display: none;
+        height: 80px;
+        width: 100%;
+        position: absolute;
+        background: white;
+        justify-content: center;
+        top: 60px;
+    }
+    .nav-menu-visible {
+        display: flex;
+        animation-name: slideIn;
+        animation-duration: 0.5s;
+        animation-timing-function: ease-out;
+    }
+
+    @keyframes slideIn {
+        0% {
+            transform: translateY(-100%);
+        }
+        100% {
+            transform: translateY(0);
+        }
+    }
+
+    .nav-menu-hidden {
+        animation-name: slideOut;
+        animation-duration: 0.5s;
+        animation-timing-function: ease-out;
+    }
+
+    @keyframes slideOut {
+        0% {
+            transform: translateY(0);
+        }
+        100% {
+            transform: translateY(-100%);
+        }
+    }
+
+    .nav-login-cart {
+        gap: 40px;
+    }
+}
+.nav-dropdown:active {
+    transform: rotate(180deg);
+    transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+}
+
+@media(max-width:500px){
+    .navbar{
+        padding: 8px 0px;
+        gap: 0;
+    }
+    .nav-logo{
+        transform: scale(0.8);
+    }
+    .nav-menu{
+        height: 70px;
+        top: 50px;
+    }
+    .nav-login-cart{
+        transform: scale(0.8);
+    }
+}
+
+

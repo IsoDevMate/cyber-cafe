@@ -154,7 +154,7 @@ export const ProfilePage = ({ user }) => {
             className="relative h-16 w-16 cursor-pointer rounded-full overflow-hidden"
           >
             {isLoading ? (
-              <PuffLoader size={32} color="#3B82F6" />
+              <p>Processing  <PuffLoader size={32} color="#3B82F6" /></p>
             ) : (
               <FaCloudUploadAlt
                 color={'#3B82F6'}

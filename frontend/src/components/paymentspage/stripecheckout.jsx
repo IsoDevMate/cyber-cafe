@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { loadStripe } from '@stripe/stripe-js';
-
+import { HashLoader } from 'react-spinners';
 export const StripePaymentPage = () => {
   const [searchParams] = useSearchParams();
   const sessionId = searchParams.get('session_id');
@@ -25,6 +25,6 @@ export const StripePaymentPage = () => {
     }
   }, [sessionId]);
 
-  return <div>Redirecting to Stripe Checkout...</div>;
+  return <div> 
+<HashLoader color="#0E100F" />  <p className='font-bold '>Redirecting to Stripe Checkout...</p></div>;
 };
-

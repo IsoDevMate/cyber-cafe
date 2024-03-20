@@ -1,6 +1,7 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../auth/context/auth';
+
+/* import React from 'react';
+   import { useNavigate } from 'react-router-dom';
+   import { useAuth } from '../../auth/context/auth';
 
 export const Cancel = () => {
     const { user } = useAuth();
@@ -43,3 +44,31 @@ export const Cancel = () => {
     </>
   );
 };
+*/
+
+
+
+import React from 'react'
+import './cancel.css'
+import { CgDanger } from "react-icons/cg";
+import { Link } from 'react-router-dom';
+
+export const Cancel = () => {
+  return (
+    <div className='main'>
+        <div className='fail-page'>
+            <div className="fail-icon">
+                <CgDanger />
+            </div>
+            <h1>Payment Unsuccessful</h1>
+            <h3>Error Processing your payment</h3>
+            <p>Click on the button to go back</p>
+            <Link to= '/cart' >
+                <button>Back</button>
+            </Link>
+            
+        </div>
+    </div>
+  )
+}
+
