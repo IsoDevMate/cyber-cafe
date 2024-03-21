@@ -192,7 +192,7 @@ const Navbar = () => {
                         )}
                     </div>
                 ) : (
-                    <Link to='/login'>
+                    <Link to='/signin'>
                         <button >Login</button>
                     </Link>
                 )}
