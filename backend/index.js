@@ -81,7 +81,7 @@ app.post('/stripe-webhook', bodyParser.raw({ type: 'application/json' }), async 
   try {
     event = stripe.webhooks.constructEvent(payload, signature, process.env.STRIPE_WEBHOOK_SECRET);
   } catch (err) {
-    console.error(`Webhook Error: ${err.message}`);
+    console.error(`Webhook ❌ Error message: ${err.message}`);
     return res.status(400).send(`Webhook Error: ${err.message}`);
   }
 
@@ -116,7 +116,7 @@ app.post('/stripe-webhook', bodyParser.raw({ type: 'application/json' }), async 
       console.log(`Unhandled event type ${event.type}`);
   }
 
-  res.status(200).end();
+  res.status(200).send("ok").end();
 });
 
 
@@ -136,9 +136,30 @@ function sendSMS(phoneNumber, message) {
       console.error(`Error sending SMS: ${error}`);
     });
 }
-app.post('/book', async (req, res) => {
 
-});
+
+//testing webhook handler  
+
+app.post('/callback',  async (req, res,next) => {
+  const callbackUrl = "https://cyber-cafe-2.onrender.com";
+
+  try {
+    const data = await axios.post(callbackUrl, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+
+    console.log("callback", data.data);
+    res.status(200).send("ok");
+  } catch (error) {
+    console.error("Error in callback:", error);
+    response.status(500).send("An error occurred");
+  }
+})
+
+
+
 
 app.post('/register', async (req, res) => {
   const { email, password } = req.body;
