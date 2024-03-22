@@ -120,12 +120,12 @@ app.post('/stripe-webhook', bodyParser.raw({ type: 'application/json' }), async 
 });
 
 
-
 function sendSMS(phoneNumber, message) {
+ 
   const options = {
-    to: [`+${phoneNumber}`],
+    to: [`+254${phoneNumber}`],
     message,
-    from: 'YOUR_SENDER_ID',
+    from: 'BARO',
   };
 
   africastalking.SMS.send(options)
@@ -214,13 +214,13 @@ app.post('/addadmin', async (req, res) =>{
 });
 
 app.post('/send-email', async (req, res) => {
-  const { email, service, startTime, bill, stripePaymentLink } = req.body;
+  const { email, service, startTime, bill, stripePaymentLink, phoneNumber } = req.body;
 
   const msg = {
     to: email,
     from: 'oumabarack1047@gmail.com',
     subject: 'Booking Confirmation',
-    text: `Your ${service} session has been booked for ${startTime}. Your bill is $${bill.toFixed(2)}. Payment link: ${stripePaymentLink}`,
+    text: `Your ${service} session has been booked for ${startTime}. Phone Number Paid: ${phoneNumber}.Your bill is $${bill.toFixed(2)}. Payment link: ${stripePaymentLink}. `,
   };
 
   try {
@@ -254,7 +254,7 @@ app.post('/create-checkout-session', async (req, res) => {
             unit_amount: Math.round(amount * 100),  
           },
           quantity: 1,
-          description: service,
+         
         },
       ],
     });
@@ -278,8 +278,8 @@ app.get('/success', async (req, res) => {
       status: 'completed',
       createdAt: new Date(),
     });
-
-    res.redirect(`${process.env.FRONTEND_URL}/success`)
+  res.send('Payment successful');
+   // res.redirect(`${process.env.FRONTEND_URL}/success`)
   } catch (error) {
     console.error('Error recording order:', error);
     res.status(500).json({ error: 'An error occurred' });
@@ -297,8 +297,8 @@ app.get('/cancel', async (req, res) => {
       status: 'cancelled',
       createdAt: new Date(),
     });
-
-    res.redirect(`${process.env.FRONTEND_URL}/cancel`)
+  res.sendd('Payment cancelled');
+  //  res.redirect(`${process.env.FRONTEND_URL}/cancel`)
   } catch (error) {
     console.error('Error recording order:', error);
     res.status(500).json({ error: 'An error occurred' });
