@@ -63,7 +63,7 @@ export const Cancel = () => {
             <h1>Payment Unsuccessful</h1>
             <h3>Error Processing your payment</h3>
             <p>Click on the button to go back</p>
-            <Link to= '/cart' >
+            <Link to= '/queue' >
                 <button>Back</button>
             </Link>
             

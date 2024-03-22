@@ -14,6 +14,14 @@ const multer = require('multer');
 const path = require('path');
 const firebase = require('firebase-admin');
 //const { nanoid } = require('nanoid/non-secure');
+const AfricasTalking = require('africastalking')
+
+const africastalking = AfricasTalking({
+  apiKey: process.env.API_KEY,
+  username: process.env.USERNAME,
+});
+
+//const sms = AfricasTalking.SMS;
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const cors = require('cors');
 const corsOptions = {
@@ -63,6 +71,74 @@ app.get('/', (req, res) => {
   res.send('Welcome to the Cyber Cafe API');
 })
 
+
+app.post('/stripe-webhook', bodyParser.raw({ type: 'application/json' }), async (req, res) => {
+  const payload = req.body;
+  const signature = req.headers['stripe-signature'];
+
+  let event;
+
+  try {
+    event = stripe.webhooks.constructEvent(payload, signature, process.env.STRIPE_WEBHOOK_SECRET);
+  } catch (err) {
+    console.error(`Webhook Error: ${err.message}`);
+    return res.status(400).send(`Webhook Error: ${err.message}`);
+  }
+
+  switch (event.type) {
+    case 'checkout.session.completed':
+      const session = event.data.object;
+      const customerEmail = session.customer_details.email;
+      const amount = session.amount_total / 100;
+      const paymentTime = new Date(session.payment_intent.created * 1000);
+
+   
+      sendSMS(customerEmail, `Payment successful! Amount: $${amount} Service: ${session.line_items.data[0].description} Paid at: ${paymentTime.toLocaleString()}`);
+      break;
+
+    case 'checkout.session.expired':
+      const expiredSession = event.data.object;
+      const expiredEmail = expiredSession.customer_details.email;
+
+     
+      sendSMS(expiredEmail, 'Your payment link has expired. Please try again.');
+      break;
+
+    case 'checkout.session.async_payment_failed':
+      const failedSession = event.data.object;
+      const failedEmail = failedSession.customer_details.email;
+
+
+      sendSMS(failedEmail, 'Payment failed. Please try again.');
+      break;
+
+    default:
+      console.log(`Unhandled event type ${event.type}`);
+  }
+
+  res.status(200).end();
+});
+
+
+
+function sendSMS(phoneNumber, message) {
+  const options = {
+    to: [`+${phoneNumber}`],
+    message,
+    from: 'YOUR_SENDER_ID',
+  };
+
+  africastalking.SMS.send(options)
+    .then(response => {
+      console.log(`SMS sent successfully: ${response.SMSMessageData.Message}`);
+    })
+    .catch(error => {
+      console.error(`Error sending SMS: ${error}`);
+    });
+}
+app.post('/book', async (req, res) => {
+
+});
 
 app.post('/register', async (req, res) => {
   const { email, password } = req.body;
@@ -140,7 +216,6 @@ app.post('/send-email', async (req, res) => {
 app.post('/create-checkout-session', async (req, res) => {
   const { amount, email, service } = req.body;
  
-
   try {
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
@@ -158,6 +233,7 @@ app.post('/create-checkout-session', async (req, res) => {
             unit_amount: Math.round(amount * 100),  
           },
           quantity: 1,
+          description: service,
         },
       ],
     });
@@ -182,7 +258,7 @@ app.get('/success', async (req, res) => {
       createdAt: new Date(),
     });
 
-    res.send('Payment successful');
+    res.redirect(`${process.env.FRONTEND_URL}/success`)
   } catch (error) {
     console.error('Error recording order:', error);
     res.status(500).json({ error: 'An error occurred' });
@@ -201,7 +277,7 @@ app.get('/cancel', async (req, res) => {
       createdAt: new Date(),
     });
 
-    res.send('Payment cancelled');
+    res.redirect(`${process.env.FRONTEND_URL}/cancel`)
   } catch (error) {
     console.error('Error recording order:', error);
     res.status(500).json({ error: 'An error occurred' });

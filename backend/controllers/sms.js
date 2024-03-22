@@ -1,11 +1,7 @@
 const app = require('express')();
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const AfricasTalking = require('africastalking')({
-  apiKey: process.env.API_KEY,
-  username: process.env.USERNAME
-});
-const sms = AfricasTalking.SMS;
+
 const connectDB = require('./db');
 
 app.use(cors());
