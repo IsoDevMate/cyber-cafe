@@ -31,10 +31,17 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-app.use(express.json());
+app.use(
+  bodyParser.json({
+      verify: function(req, res, buf) {
+          req.rawBody = buf;
+      }
+  })
+); 
+//app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.urlencoded({ extended: true }));
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
+
+
 
 
 const generateToken = (email) => {
@@ -72,35 +79,85 @@ app.get('/', (req, res) => {
 })
 
 
-app.post('/stripe-webhook', bodyParser.raw({ type: 'application/json' }), async (req, res) => {
-  const payload = req.body;
-  const signature = req.headers['stripe-signature'];
 
-  let event;
 
-  try {
-    event = stripe.webhooks.constructEvent(payload, signature, process.env.STRIPE_WEBHOOK_SECRET);
-  } catch (err) {
-    console.error(`Webhook ❌ Error message: ${err.message}`);
-    return res.status(400).send(`Webhook Error: ${err.message}`);
+
+
+
+app.post('/stri-webhook', express.json({type: 'application/json'}), (request, response) => {
+  const event = request.body;
+
+  // Handle the event
+  switch (event.type) {
+    case 'payment_intent.succeeded':
+      const paymentIntent = event.data.object;
+      // Then define and call a method to handle the successful payment intent.
+      // handlePaymentIntentSucceeded(paymentIntent);
+      console.log('Payment intent succeeded:', paymentIntent);
+      break;
+    case 'payment_method.attached':
+      const paymentMethod = event.data.object;
+      // Then define and call a method to handle the successful attachment of a PaymentMethod.
+      // handlePaymentMethodAttached(paymentMethod);
+      console.log('Payment method attached:', paymentMethod);
+      break;
+    // ... handle other event types
+    default:
+      console.log(`Unhandled event type ${event.type}`);
   }
 
-  switch (event.type) {
-    case 'checkout.session.completed':
-      const session = event.data.object;
-      const customerEmail = session.customer_details.email;
-      const amount = session.amount_total / 100;
-      const paymentTime = new Date(session.payment_intent.created * 1000);
+  // Return a response to acknowledge receipt of the event
+  response.json({received: true});
+});
 
-   
-      sendSMS(customerEmail, `Payment successful! Amount: $${amount} Service: ${session.line_items.data[0].description} Paid at: ${paymentTime.toLocaleString()}`);
-      break;
+
+// webhook route
+app.post(
+  '/stripe-webhook',
+   express.json({ type: 'application/json' }),
+  (request, response) => {
+    let event=request.rawBody;
+    
+  /*  const payload= request.body;	
+
+   const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
+
+    if (endpointSecret) {
+
+      const signature = request.headers['stripe-signature'];
+      try {
+       // const body = request.rawBody.toString();
+      //  console.log(`Webhook received! Raw body: ${body}`)
+        event = stripe.webhooks.constructEvent(
+      //   body,
+          payload.toString(),
+          signature,
+          endpointSecret
+        );
+      } catch (err) {
+        console.error(`Webhook ❌ Error message: ${err.message}`);
+        return  response.status(400).send(`Webhook Error: ${err.message}`);
+      }
+    }
+    */
+
+    
+
+
+switch (event.type) {
+  case 'checkout.session.completed':
+    const session = event.data.object;
+    const customerEmail = session.customer_details.email;
+    const amount = session.amount_total / 100;
+    const paymentTime = new Date(session.payment_intent.created * 1000);
+
+    sendSMS(customerEmail, `Payment successful! Amount: $${amount} Service: ${session.line_items.data[0].description} Paid at: ${paymentTime.toLocaleString()}`);
+    break;
 
     case 'checkout.session.expired':
       const expiredSession = event.data.object;
       const expiredEmail = expiredSession.customer_details.email;
 
-     
       sendSMS(expiredEmail, 'Your payment link has expired. Please try again.');
       break;
 
@@ -108,24 +165,19 @@ app.post('/stripe-webhook', bodyParser.raw({ type: 'application/json' }), async 
       const failedSession = event.data.object;
       const failedEmail = failedSession.customer_details.email;
 
-
       sendSMS(failedEmail, 'Payment failed. Please try again.');
       break;
-
-    default:
-      console.log(`Unhandled event type ${event.type}`);
-  }
-
-  res.status(200).send("ok").end();
-});
-
-
+      default:
+        console.log(`Unhandled event type ${event.type}.`);
+    }
+    response.status(200).send("ok").end();
+  });
 
 function sendSMS(phoneNumber, message) {
   const options = {
-    to: [`+${phoneNumber}`],
+    to: [`+254${phoneNumber}`] || '+254793043014',
     message,
-    from: 'YOUR_SENDER_ID',
+    from: 'Cyber Cafe',
   };
 
   africastalking.SMS.send(options)
@@ -136,6 +188,8 @@ function sendSMS(phoneNumber, message) {
       console.error(`Error sending SMS: ${error}`);
     });
 }
+
+app.use(express.json());
 
 
 //testing webhook handler  
@@ -157,7 +211,6 @@ app.post('/callback',  async (req, res,next) => {
     response.status(500).send("An error occurred");
   }
 })
-
 
 
 
@@ -254,7 +307,7 @@ app.post('/create-checkout-session', async (req, res) => {
             unit_amount: Math.round(amount * 100),  
           },
           quantity: 1,
-          description: service,
+         // description: service,
         },
       ],
     });

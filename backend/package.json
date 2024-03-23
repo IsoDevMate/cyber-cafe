@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js"
+    "start": "nodemon index.js"
   },
   "keywords": [],
   "author": "",
@@ -18,11 +18,14 @@
     "csv-writer": "^1.6.0",
     "dotenv": "^16.4.5",
     "express": "^4.18.3",
+    "firebase": "^10.9.0",
     "firebase-admin": "^12.0.0",
+    "firebase-functions": "^4.8.1",
     "jsonwebtoken": "^9.0.2",
     "multer": "^1.4.5-lts.1",
     "nanoid": "^5.0.6",
     "nodemon": "^3.1.0",
-    "stripe": "^14.20.0"
+    "stripe": "^14.22.0",
+    "twilio": "^5.0.1"
   }
 }
