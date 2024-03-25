@@ -71,7 +71,7 @@ app.get('/', (req, res) => {
   res.send('Welcome to the Cyber Cafe API');
 })
 
-
+/*
 app.post('/stripe-webhook', bodyParser.raw({ type: 'application/json' }), async (req, res) => {
   const payload = req.body;
   const signature = req.headers['stripe-signature'];
@@ -120,12 +120,12 @@ app.post('/stripe-webhook', bodyParser.raw({ type: 'application/json' }), async 
 });
 
 
-
 function sendSMS(phoneNumber, message) {
+ 
   const options = {
-    to: [`+${phoneNumber}`],
+    to: [`+254${phoneNumber}`],
     message,
-    from: 'YOUR_SENDER_ID',
+    from: 'BARO',
   };
 
   africastalking.SMS.send(options)
@@ -156,7 +156,7 @@ app.post('/callback',  async (req, res,next) => {
     console.error("Error in callback:", error);
     response.status(500).send("An error occurred");
   }
-})
+}) */
 
 
 
@@ -213,14 +213,15 @@ app.post('/addadmin', async (req, res) =>{
   }
 });
 
+
 app.post('/send-email', async (req, res) => {
-  const { email, service, startTime, bill, stripePaymentLink } = req.body;
+  const { email, service, startTime, bill, stripePaymentLink, phoneNumber } = req.body;
 
   const msg = {
     to: email,
     from: 'oumabarack1047@gmail.com',
     subject: 'Booking Confirmation',
-    text: `Your ${service} session has been booked for ${startTime}. Your bill is $${bill.toFixed(2)}. Payment link: ${stripePaymentLink}`,
+    text: `Your ${service} session has been booked for ${startTime}. Phone Number Paid: ${phoneNumber}.Your bill is $${bill.toFixed(2)}. Payment link: ${stripePaymentLink}. `,
   };
 
   try {
@@ -254,7 +255,7 @@ app.post('/create-checkout-session', async (req, res) => {
             unit_amount: Math.round(amount * 100),  
           },
           quantity: 1,
-          description: service,
+         
         },
       ],
     });
@@ -266,20 +267,26 @@ app.post('/create-checkout-session', async (req, res) => {
   }
 });
 
+
 app.get('/success', async (req, res) => {
   const { email, amount, service } = req.query;
 
   try {
-    
-    await ordersCollection.add({
+    const paymentTime = new Date();
+
+    // Store order details in Firestore
+    await db.collection('orders').add({
       email,
       amount: parseFloat(amount),
       service,
+      paymentTime,
       status: 'completed',
-      createdAt: new Date(),
     });
 
-    res.redirect(`${process.env.FRONTEND_URL}/success`)
+    // Send SMS notification
+    sendSMS(email, `Payment successful! Amount: $${amount} Service: ${service} Paid at: ${paymentTime.toLocaleString()}`);
+
+    res.redirect(`${process.env.FRONTEND_URL}/success`);
   } catch (error) {
     console.error('Error recording order:', error);
     res.status(500).json({ error: 'An error occurred' });
@@ -290,20 +297,42 @@ app.get('/cancel', async (req, res) => {
   const { email, amount, service } = req.query;
 
   try {
-    await ordersCollection.add({
+    const paymentTime = new Date();
+
+    // Store order details in Firestore
+    await db.collection('orders').add({
       email,
-      amount,
+      amount: parseFloat(amount),
       service,
+      paymentTime,
       status: 'cancelled',
-      createdAt: new Date(),
     });
 
-    res.redirect(`${process.env.FRONTEND_URL}/cancel`)
+    // Send SMS notification
+    sendSMS(email, `Payment cancelled. Amount: $${amount} Service: ${service}`);
+
+    res.redirect(`${process.env.FRONTEND_URL}/cancel`);
   } catch (error) {
     console.error('Error recording order:', error);
     res.status(500).json({ error: 'An error occurred' });
   }
 });
+
+function sendSMS(phoneNumber, message) {
+  const options = {
+    to: [`+254${phoneNumber}`] || '+254793043014',
+    message,
+    from: 'Cyber Cafe',
+  };
+
+  africastalking.SMS.send(options)
+    .then(response => {
+      console.log(`SMS sent successfully: ${response.SMSMessageData.Message}`);
+    })
+    .catch(error => {
+      console.error(`Error sending SMS: ${error}`);
+    });
+}
 
 app.get('/completed-orders', async (req, res) => {
   try {
