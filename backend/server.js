@@ -10,7 +10,6 @@ const verifyToken = require('./middlewares/verifytoken');
 const port = process.env.PORT || 3000;
 const bodyParser = require('body-parser');
 const sendgridMail = require('@sendgrid/mail');
-const twilio = require('twilio')(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN)
 const multer = require('multer');
 const path = require('path');
 const firebase = require('firebase-admin');
@@ -47,8 +46,7 @@ const generateToken = (email) => {
 // Initialize Firebase Admin SDK
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
-  storageBucket: 'ivanprojo-72b52.appspot.com',
-  ignoreUndefinedProperties: true,
+  storageBucket: 'ivanprojo-72b52.appspot.com'
 });
 
 const db = admin.firestore();
@@ -120,11 +118,14 @@ app.post('/stripe-webhook', bodyParser.raw({ type: 'application/json' }), async 
 
   res.status(200).send("ok").end();
 });
+
+
 function sendSMS(phoneNumber, message) {
+ 
   const options = {
-    to: [`+${phoneNumber}`],
+    to: [`+254${phoneNumber}`],
     message,
-    from: 'YOUR_SENDER_ID',
+    from: 'BARO',
   };
 
   africastalking.SMS.send(options)
@@ -155,9 +156,9 @@ app.post('/callback',  async (req, res,next) => {
     console.error("Error in callback:", error);
     response.status(500).send("An error occurred");
   }
-})
+}) */
 
-*/
+
 
 
 app.post('/register', async (req, res) => {
@@ -212,14 +213,15 @@ app.post('/addadmin', async (req, res) =>{
   }
 });
 
+
 app.post('/send-email', async (req, res) => {
-  const { email, service, startTime, bill, stripePaymentLink } = req.body;
+  const { email, service, startTime, bill, stripePaymentLink, phoneNumber } = req.body;
 
   const msg = {
     to: email,
     from: 'oumabarack1047@gmail.com',
     subject: 'Booking Confirmation',
-    text: `Your ${service} session has been booked for ${startTime}. Your bill is $${bill.toFixed(2)}. Payment link: ${stripePaymentLink}`,
+    text: `Your ${service} session has been booked for ${startTime}. Phone Number Paid: ${phoneNumber}.Your bill is $${bill.toFixed(2)}. Payment link: ${stripePaymentLink}. `,
   };
 
   try {
@@ -232,26 +234,28 @@ app.post('/send-email', async (req, res) => {
   }
 });
 
+
 app.post('/create-checkout-session', async (req, res) => {
   const { amount, email, service } = req.body;
-  console.log('email for this user ', email);
-
+ 
   try {
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       mode: 'payment',
-      success_url: `${process.env.DOMAIN}/success?email=${encodeURIComponent(email)}&amount=${amount}&service=${encodeURIComponent(service)}&from_stripe=true`,
-      cancel_url: `${process.env.DOMAIN}/cancel?email=${encodeURIComponent(email)}&amount=${amount}&service=${encodeURIComponent(service)}&from_stripe=true`,
+     success_url :`${process.env.DOMAIN}/success?email=${encodeURIComponent(email)}&amount=${amount}&service=${encodeURIComponent(service)}`,
+      cancel_url: `${process.env.DOMAIN}/cancel`,
+      //customer: user.stripeCustomerId,
       line_items: [
         {
           price_data: {
-            currency: 'usd',
+            currency: 'usd', 
             product_data: {
               name: 'Service Payment',
             },
-            unit_amount: Math.round(amount * 100),
+            unit_amount: Math.round(amount * 100),  
           },
           quantity: 1,
+         
         },
       ],
     });
@@ -263,98 +267,62 @@ app.post('/create-checkout-session', async (req, res) => {
   }
 });
 
+
 app.get('/success', async (req, res) => {
-  const {  amount, from_stripe } = req.query;
+  const { email, amount, service } = req.query;
 
-  if (from_stripe) {
-    try {
-      const paymentTime = new Date();
-      await db.collection('orders').add({
-    
-        amount: parseFloat(amount),
-    
-        paymentTime,
-        status: 'completed',
-      });
+  try {
+    const paymentTime = new Date();
 
-      const msg = {
-        to: "oumabarack9889@gmail.com",
-        from: 'oumabarack1047@gmail.com',
-        subject: 'Payment Successful',
-        text: `Payment successful! Amount: $${amount} Service: INternet  Paid at: ${paymentTime.toLocaleString()}`,
-      };
+    // Store order details in Firestore
+    await db.collection('orders').add({
+      email,
+      amount: parseFloat(amount),
+      service,
+      paymentTime,
+      status: 'completed',
+    });
 
-      try {
-        await sendgridMail.send(msg);
-        console.log(`Email sent successfully, payment successful `);
-        res.status(200).json({ success: true });
-      } catch (error) {
-        console.error('Error sending email:', error);
-        res.status(500).json({ success: false, error: error.toString() });
-      }
-    } catch (error) {
-      console.error('Error recording order:', error);
-      res.status(500).json({ error: 'An error occurred' });
-    }
-  } else {
+    // Send SMS notification
+    sendSMS(email, `Payment successful! Amount: $${amount} Service: ${service} Paid at: ${paymentTime.toLocaleString()}`);
+
     res.redirect(`${process.env.FRONTEND_URL}/success`);
+  } catch (error) {
+    console.error('Error recording order:', error);
+    res.status(500).json({ error: 'An error occurred' });
   }
 });
 
 app.get('/cancel', async (req, res) => {
-  const {  amount,  from_stripe } = req.query;
+  const { email, amount, service } = req.query;
 
-  if (from_stripe) {
-    try {
-      const paymentTime = new Date();
-      await db.collection('orders').add({
-        amount: parseFloat(amount),
-        paymentTime,
-        status: 'cancelled',
-      });
-      
-      // Send email notification
-      const msg = {
-        to: "oumabarack9889@gmail.com",
-        from: 'oumabarack1047@gmail.com',
-        subject: 'Payment Cancelled',
-        text: `Payment cancelled. Amount: $${amount} Service: ${service}`,
-      };
+  try {
+    const paymentTime = new Date();
 
-      try {
-        await sendgridMail.send(msg);
-        console.log(`Email sent successfully, payment cancelled `);
-        res.status(200).json({ success: true });
-      } catch (error) {
-        console.error('Error sending email:', error);
-        res.status(500).json({ success: false, error: error.toString() });
-      }
-    } catch (error) {
-      console.error('Error recording order:', error);
-      res.status(500).json({ error: 'An error occurred' });
-    }
-  } else {
+    // Store order details in Firestore
+    await db.collection('orders').add({
+      email,
+      amount: parseFloat(amount),
+      service,
+      paymentTime,
+      status: 'cancelled',
+    });
+
+    // Send SMS notification
+    sendSMS(email, `Payment cancelled. Amount: $${amount} Service: ${service}`);
+
     res.redirect(`${process.env.FRONTEND_URL}/cancel`);
+  } catch (error) {
+    console.error('Error recording order:', error);
+    res.status(500).json({ error: 'An error occurred' });
   }
 });
 
-/*
-function sendSMS( phoneNumber,message) {
-  const validPhoneNumber = phoneNumber && typeof phoneNumber === 'string' && phoneNumber.trim().length > 0
-  ? phoneNumber.trim()
-  : null;
-
-  console.log('validPhoneNumber', validPhoneNumber)
-
-const defaultPhoneNumber = "+254769784198";
-
-const toPhoneNumber = validPhoneNumber || defaultPhoneNumber;
-
+function sendSMS(phoneNumber, message) {
   const options = {
-    to: validPhoneNumber || '+254793043014',
- // to: '0769784198',
+    to: [`+254${phoneNumber}`] || '+254793043014',
     message,
-    from:'',
+    from: 'Cyber Cafe',
   };
 
   africastalking.SMS.send(options)
@@ -365,70 +333,6 @@ const toPhoneNumber = validPhoneNumber || defaultPhoneNumber;
       console.error(`Error sending SMS: ${error}`);
     });
 }
-*/
-/*
-function sendSMS( message) {
-  const validPhoneNumber = phoneNumber && typeof phoneNumber === 'string' && phoneNumber.trim().length > 0
-    ? phoneNumber.trim()
-    : null;
-
-    console.log('validPhoneNumber', validPhoneNumber)
-
-  const defaultPhoneNumber = "+2540769784198";
-
-  const toPhoneNumber = validPhoneNumber || defaultPhoneNumber;
-
-  twilio.messages
-    .create({
-      body: message,
-      from: process.env.TWILIO_PHONE_NUMBER,
-      to: defaultPhoneNumber,
-    })
-    .then((message) => {
-      console.log(message.to);
-      console.log(`SMS sent: ${message.sid}`);
-    })
-    .catch((error) => console.error(`Error sending SMS: ${error}`));
-}*/
-/*
-app.get('/success', async (req, res) => {
-  const { email, amount, service } = req.query;
-
-  try {
-    
-    await ordersCollection.add({
-      email,
-      amount: parseFloat(amount),
-      service,
-      status: 'completed',
-      createdAt: new Date(),
-    });
-
-    res.redirect(`${process.env.FRONTEND_URL}/success`)
-  } catch (error) {
-    console.error('Error recording order:', error);
-    res.status(500).json({ error: 'An error occurred' });
-  }
-});
-
-app.get('/cancel', async (req, res) => {
-  const { email, amount, service } = req.query;
-
-  try {
-    await ordersCollection.add({
-      email,
-      amount,
-      service,
-      status: 'cancelled',
-      createdAt: new Date(),
-    });
-
-    res.redirect(`${process.env.FRONTEND_URL}/cancel`)
-  } catch (error) {
-    console.error('Error recording order:', error);
-    res.status(500).json({ error: 'An error occurred' });
-  }
-}); */
 
 app.get('/completed-orders', async (req, res) => {
   try {
